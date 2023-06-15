@@ -1,0 +1,5 @@
+BEGIN
+  Variaveis_Pkg.v_Atualizando := True;
+update tgffin set codtipoper = 1300 , dhtipoper = (select max(dhalter) from tgftop where codtipoper = 1300) where  nvl(codtipoper,0) = 0 and recdesp <> 0;
+  Variaveis_Pkg.v_Atualizando := False;
+END;
