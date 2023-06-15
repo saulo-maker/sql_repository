@@ -46,6 +46,15 @@ BEGIN
         WHERE M.CODPRODPA = FIELD_CODPRODPA
         AND A.IDPROC = FIELD_IDPROC;
         
+       SELECT SUM(NVL(QTD,0)*NVL(VLRUNIT,0)) + V_VLMP
+       INTO V_VLMP
+       FROM AD_SERCOMP
+       WHERE CODPRODPA = FIELD_CODPRODPA
+       AND CODEMP = ( SELECT PR.CODPLP
+                      FROM TPRPRC PR 
+                      WHERE PR.IDPROC = FIELD_IDPROC
+                      AND PR.VERSAO = (SELECT MAX(P.VERSAO) FROM TPRPRC P WHERE P.CODPRC = PR.CODPRC));
+        
         BEGIN
             SELECT COUNT(C.CODPROD)
             INTO EXTPROD
@@ -87,7 +96,7 @@ BEGIN
         EXCEPTION
             WHEN NO_DATA_FOUND THEN
             V_VLRVENDA := 0;
-        END;    
+        END;
         
         IF EXTPROD = 0
             THEN
